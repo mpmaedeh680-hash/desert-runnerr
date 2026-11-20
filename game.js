@@ -41,6 +41,7 @@ function release() {
 
 addEventListener('pointerdown', e => { e.preventDefault(); jump(); });
 addEventListener('pointerup', release);
+addEventListener('pointercancel', release);
 addEventListener('keydown', e => {
   if ((e.code === 'Space' || e.code === 'ArrowUp') && !e.repeat) { e.preventDefault(); jump(); }
 });
