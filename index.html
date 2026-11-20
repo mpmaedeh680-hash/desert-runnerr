@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>دونده‌ی کویر</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a1026">
+</head>
+<body>
+  <div id="wrap">
+    <div id="box">
+      <canvas id="c" width="400" height="600"></canvas>
+      <button id="mute">🔊</button>
+      <div id="ui">
+        <h1 id="t">دونده‌ی کویر</h1>
+        <p id="m">لمس کوتاه = پرش کوتاه، نگه‌داشتن = پرش بلند</p>
+        <p id="s">برای شروع صفحه را لمس کن</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="colors.js"></script>
+  <script src="audio.js"></script>
+  <script src="draw.js"></script>
+  <script src="game.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>
