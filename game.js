@@ -134,5 +134,20 @@ function loop(now) {
   requestAnimationFrame(loop);
 }
 
+const fullBtn = document.getElementById('full');
+const root = document.documentElement;
+
+if (!root.requestFullscreen) {
+  fullBtn.style.display = 'none';      // آیفون این قابلیت رو نداره
+}
+
+fullBtn.addEventListener('pointerdown', e => e.stopPropagation());
+fullBtn.addEventListener('click', () => {
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  } else {
+    root.requestFullscreen().catch(() => {});
+  }
+});
 reset();
 requestAnimationFrame(loop);
