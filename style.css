@@ -42,3 +42,13 @@ html, body {
     background: rgba(255, 233, 199, .15);
     font-size: 22px; cursor: pointer;
   }
+
+/* دکمه‌ی تمام‌صفحه */
+#full {
+  position: absolute; top: 12px; right: 64px;
+  width: 44px; height: 44px;
+  border: 0; border-radius: 50%;
+  background: rgba(255, 233, 199, .15);
+  color: #ffe9c7;
+  font-size: 22px; cursor: pointer;
+}
