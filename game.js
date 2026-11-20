@@ -3,7 +3,8 @@ const ui = document.getElementById('ui');
 let state = 'idle';       // idle | play | over
 let player, obstacles, speed, score, startTime, spawnTimer, lastMilestone;
 let overAt = 0;
-let best = Number(localStorage.getItem('best')) || 0;
+let best = 0;
+try { best = Number(localStorage.getItem('best')) || 0; } catch (e) {}
 
 // شروع یا ریست
 function reset() {
@@ -20,7 +21,7 @@ function reset() {
 /* ---------- ورودی ---------- */
 function jump() {
   initAudio();
-  if (state === 'over' && performance.now() - overAt < 500) return;   // جلوگیری از شروع ناخواسته
+  if (state === 'over' && performance.now() - overAt < 500) return;
   if (state === 'idle' || state === 'over') {
     reset();
     state = 'play';
@@ -56,7 +57,7 @@ function gameOver() {
   sfx.crash();
   if (score > best) {
     best = score;
-    localStorage.setItem('best', best);
+    try { localStorage.setItem('best', best); } catch (e) {}
   }
   document.getElementById('t').textContent = 'باختی!';
   document.getElementById('m').textContent = 'امتیاز: ' + score + '   رکورد: ' + best;
@@ -68,16 +69,13 @@ function gameOver() {
 function spawnObstacle() {
   const r = Math.random();
   if (score > 120 && r < 0.25) {
-    // پرنده (بعد از امتیاز ۱۲۰)
     obstacles.push({ x: W + 20, y: GROUND - 85 + Math.random() * 10, w: 38, h: 26, bird: true });
   } else if (score > 50 && r < 0.5) {
-    // دو مانع کنار هم (بعد از امتیاز ۵۰)
     const h1 = 30 + Math.random() * 35;
     const h2 = 30 + Math.random() * 35;
     obstacles.push({ x: W + 20,      y: GROUND - h1, w: 22, h: h1 });
     obstacles.push({ x: W + 20 + 38, y: GROUND - h2, w: 22, h: h2 });
   } else {
-    // مانع تکی
     const h = 30 + Math.random() * 45;
     obstacles.push({ x: W + 20, y: GROUND - h, w: 24 + Math.random() * 18, h });
   }
@@ -93,8 +91,7 @@ function loop(now) {
   if (state === 'play') {
     speed = Math.min(speed + dt * 18, 1000);   // شتاب و سقف سرعت
 
-    // فیزیک بازیکن
-    player.vy += 1900 * dt;                  // جاذبه
+    player.vy += 1900 * dt;                    // جاذبه
     player.y += player.vy * dt;
     if (player.y >= GROUND - player.h) {
       player.y = GROUND - player.h;
@@ -102,18 +99,15 @@ function loop(now) {
       player.onGround = true;
     }
 
-    // مانع جدید
     spawnTimer -= dt;
     if (spawnTimer <= 0) {
       spawnObstacle();
       spawnTimer = 0.95 + Math.random() * 0.9;
     }
 
-    // حرکت مانع‌ها
     obstacles.forEach(o => o.x -= speed * dt);
     obstacles = obstacles.filter(o => o.x + o.w > -10);
 
-    // برخورد
     for (const o of obstacles) {
       const hit =
         player.x + player.w - 6 > o.x &&
@@ -123,7 +117,6 @@ function loop(now) {
       if (hit) { gameOver(); break; }
     }
 
-    // امتیاز
     score = Math.floor((now - startTime) / 100);
     if (score - lastMilestone >= 100) {
       lastMilestone = score - (score % 100);
@@ -135,36 +128,22 @@ function loop(now) {
   requestAnimationFrame(loop);
 }
 
-const fullBtn = document.getElementById('full');
-const root = document.documentElement;
-
-if (!root.requestFullscreen) {
-  fullBtn.style.display = 'none';      // آیفون این قابلیت رو نداره
-}
-
-fullBtn.addEventListener('pointerdown', e => e.stopPropagation());
-fullBtn.addEventListener('click', () => {
-  if (document.fullscreenElement) {
-    document.exitFullscreen();
-  } else {
-    root.requestFullscreen().catch(() => {});
-  }
-});
 /* ---------- دکمه‌ی تمام‌صفحه ---------- */
 const fullBtn = document.getElementById('full');
 const root = document.documentElement;
-
-if (!root.requestFullscreen) {
-  fullBtn.style.display = 'none';      // آیفون این قابلیت رو نداره
+if (fullBtn) {
+  if (!root.requestFullscreen) {
+    fullBtn.style.display = 'none';      // آیفون این قابلیت رو نداره
+  }
+  fullBtn.addEventListener('pointerdown', e => e.stopPropagation());
+  fullBtn.addEventListener('click', () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      root.requestFullscreen().catch(() => {});
+    }
+  });
 }
 
-fullBtn.addEventListener('pointerdown', e => e.stopPropagation());
-fullBtn.addEventListener('click', () => {
-  if (document.fullscreenElement) {
-    document.exitFullscreen();
-  } else {
-    root.requestFullscreen().catch(() => {});
-  }
-});
 reset();
 requestAnimationFrame(loop);
