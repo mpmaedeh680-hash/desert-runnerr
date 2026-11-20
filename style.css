@@ -22,6 +22,14 @@ html, body {
     color: #ffe9c7;
     pointer-events: none;
   }
+#full {
+  position: absolute; top: 12px; right: 64px;
+  width: 44px; height: 44px;
+  border: 0; border-radius: 50%;
+  background: rgba(255, 233, 199, .15);
+  color: #ffe9c7;
+  font-size: 22px; cursor: pointer;
+}
   #ui h1 { margin: 0; font-size: 2rem; color: #ff8a3d; }
   #ui p { margin: 0; }
   #ui.hide { display: none; }
