@@ -1,4 +1,4 @@
-const CACHE = 'runner-v1';
+const CACHE = 'runner-v3';
 const FILES = [
   './', './index.html', './style.css',
   './colors.js', './audio.js', './draw.js', './game.js',
@@ -6,9 +6,26 @@ const FILES = [
 ];
 
 self.addEventListener('install', e => {
+  self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)));
 });
 
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+    ).then(() => self.clients.claim())
+  );
+});
+
 self.addEventListener('fetch', e => {
-  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+  e.respondWith(
+    fetch(e.request)
+      .then(res => {
+        const copy = res.clone();
+        caches.open(CACHE).then(c => c.put(e.request, copy));
+        return res;
+      })
+      .catch(() => caches.match(e.request))
+  );
 });
