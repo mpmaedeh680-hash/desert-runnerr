@@ -90,7 +90,7 @@ function loop(now) {
   last = now;
 
   if (state === 'play') {
-    speed = Math.min(speed + dt * 9, 760);   // شتاب و سقف سرعت
+    speed = Math.min(speed + dt * 18, 1000);   // شتاب و سقف سرعت
 
     // فیزیک بازیکن
     player.vy += 1900 * dt;                  // جاذبه
